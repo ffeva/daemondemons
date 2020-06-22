@@ -4,7 +4,7 @@ pipeline {
         DOCKER_IMAGE_NAME_HTTPD = "dd/httpd"
         CANARY_REPLICAS = 0
         KUBE_CONTROLLER_IP = "canary.httpd.dev.dd-kube.academy.grads.al-labs.co.uk"
-        DR_IP = 172.31.26.247:5000
+        DR_IP = "172.31.26.247:5000"
     }
     stages {
         stage('HTTPD Build') {
