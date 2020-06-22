@@ -1,0 +1,20 @@
+[remove]
+local1 ansible_host=127.0.0.1 ansible_connection=local
+
+[ec2]
+local2 ansible_host=127.0.0.1 ansible_connection=local
+
+[controller]
+18.130.254.232 instance_id=i-05cdc423c17bc6835 private_ip=172.31.35.74 kubename=controller
+
+[bastion]
+18.130.254.232 instance_id=i-05cdc423c17bc6835 private_ip=172.31.35.74 kubename=bastion
+
+[kubemaster]
+18.130.246.219 instance_id=i-0c65bb2734a6b3a1f private_ip=172.31.38.131 kubename=master
+
+[kubeworker]
+18.130.95.181 instance_id=i-0f6f258b28d7429cb private_ip=172.31.44.122 kubename=worker1
+35.177.142.154 instance_id=i-0548936238664ba96 private_ip=172.31.38.64 kubename=worker1
+[ELB]
+dev-DD-K8s-Cluster-dev-lb-1606682577.eu-west-2.elb.amazonaws.com lbport=31139

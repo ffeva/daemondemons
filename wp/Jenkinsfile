@@ -1,0 +1,96 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_IMAGE_NAME_WP = "dd/wp"
+        CANARY_REPLICAS = 0
+        KUBE_MASTER_IP = "canary.wp.dev.dd-kube.academy.grads.al-labs.co.uk"
+    }
+    stages {
+        stage('WP Build') {
+            steps {
+                echo 'Running WP build automation'
+            }
+        }
+        stage('Build WP Docker Image') {
+            when {
+                branch 'master'
+            }
+            steps {
+                script {
+                    dir('wp') {
+                    app = docker.build(DOCKER_IMAGE_NAME_WP)
+                    }
+                }
+            }
+        }
+        stage('Push WP Docker Image') {
+            when {
+                branch 'master'
+            }
+            steps {
+                script {
+                    dir('wp') {
+                    docker.withRegistry('https://dd-dockerreg.academy.grads.al-labs.co.uk:5000') {
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")
+                        }
+                    }
+                }
+            }
+        }
+        stage('CanaryDeploy') {
+            when {
+                branch 'master'
+            }
+            environment {
+                CANARY_REPLICAS = 1
+            }
+            steps {
+                kubernetesDeploy(
+                    kubeconfigId: 'kubeconfig',
+                    configs: 'wp/Deploy-canary.yml',
+                    enableConfigSubstitution: true
+                )
+            }
+        }
+        stage('SmokeTest') {
+            when {
+                branch 'master'
+            }
+            steps {
+                script {
+                    sleep (time: 5)
+                    def response = httpRequest (
+                        url: "https://$KUBE_CONTROLLER_IP:80/",
+                        timeout: 30
+                    )
+                    if (response.status != 200) {
+                        error("Smoke test against canary deployment failed.")
+                    }
+                }
+            }
+        }
+        stage('DeployToProduction') {
+            when {
+                branch 'master'
+            }
+            steps {
+                milestone(1)
+                kubernetesDeploy(
+                    kubeconfigId: 'kubeconfig',
+                    configs: 'wp/Deploy.yml',
+                    enableConfigSubstitution: true
+                )
+            }
+        }
+    }
+    post {
+        cleanup {
+            kubernetesDeploy (
+                kubeconfigId: 'kubeconfig',
+                configs: 'wp/Deploy-canary.yml',
+                enableConfigSubstitution: true
+            )
+        }
+    }
+}

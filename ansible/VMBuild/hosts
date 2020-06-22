@@ -1,0 +1,12 @@
+[jenkins]
+jenkins ansible_host=35.177.253.172
+
+[puppet]
+puppet ansible_host=52.56.115.163
+
+[webserver]
+webserver ansible_host=35.176.15.75
+
+[all]
+jenkins
+puppet

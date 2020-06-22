@@ -1,0 +1,6 @@
+#!/bin/bash
+cat <<_END_
+{
+  "dir": "$(pwd)"
+}
+_END_

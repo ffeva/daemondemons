@@ -1,0 +1,12 @@
+- hosts: local
+  become: True
+  gather_facts: True
+  roles:
+
+    - role: ansible-role-java
+      become: yes
+    - role: ansible-role-jenkins
+      become: yes
+    - role: jenkins-apps
+      become: yes
+    - role: jenkins-jobs
