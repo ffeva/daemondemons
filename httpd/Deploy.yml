@@ -20,11 +20,11 @@ spec:
       - name: httpd
         image: $DOCKER_IMAGE_NAME_HTTPD:$BUILD_NUMBER
         ports:
-        - containerPort: 8080
+        - containerPort: 80
         livenessProbe:
           httpGet:
             path: /
-            port: 8080
+            port: 80
           initialDelaySeconds: 15
           timeoutSeconds: 1
           periodSeconds: 10
