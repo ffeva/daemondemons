@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: pc
-        image: $DOCKER_IMAGE_NAME_PC:$BUILD_NUMBER
+        image: $DR_IP/$DOCKER_IMAGE_NAME_PC:$BUILD_NUMBER
         ports:
         - containerPort: 8080
         livenessProbe:
